@@ -1,6 +1,6 @@
 {
   "name": "SWatchDog",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "SWatchDog",
   "main": "swatchdog.js",
   "author": {
@@ -13,8 +13,6 @@
     "production": "set NODE_ENV=production&& node swatchdog.js"
   },
   "dependencies": {
-    "body-parser": "^1.14.0",
-    "express": "^4.13.3",
     "mysql": "^2.10.2",   
     "node-schedule": "^0.5.1",
     "request": "^2.6.0",
