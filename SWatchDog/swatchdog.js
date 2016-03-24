@@ -14,6 +14,7 @@ connection.connect();
 /* Source Types
  * ping
  * seensysensors
+ * masterping
  */
 
 function selectFirstRelevantSource(rows, fields) {
@@ -29,7 +30,7 @@ function selectFirstRelevantSource(rows, fields) {
 function testSeensySensors(config, type) {
     var url = config.url;
     var ct = new Date();
-    console.log(url);
+    console.log("Seensy instance - sensor test: " + url);
     var res = syncRequest("GET", url);
     var data = JSON.parse(res.getBody());
     
@@ -104,21 +105,42 @@ function updateAlarms(alarms, source) {
                 });
                 
             }
+            // update source
+            sql = "UPDATE source SET so_last = NOW()";
+            connection.query(sql, function (err, rows, fields) {
+                if (err) console.log(err);
+            });
         }
     });
 }
 
+function updateMasterPing() {
+    var sql = "INSERT INTO ping (pi_source) VALUES (2) ON DUPLICATE KEY UPDATE ts = NOW()";
+    connection.query(sql, function (err) {
+        if (err) console.log(err);
+    });
+}
+
+var stateI = 0;
+var stateArray = ['-', '\\', '|', '/'];
+
 var j = schedule.scheduleJob('*/5 * * * * *', function () {
-    var sql = "SELECT * FROM type, source WHERE so_typeid = type.id";
+    stateI++;
+    process.stdout.write(stateArray[stateI % 4] + "\033[0G");
+    updateMasterPing();
+
+    var sql = "SELECT * FROM type, source WHERE so_typeid = type.id AND so_typeid != 3";
     connection.query(sql, function (err, rows, fields) {
         if (err == null) {
             // select first relevant source
             var source = selectFirstRelevantSource(rows, fields);
             // test the source
-            if (source != null) var alarms = testSource(source);
-            // update database with new alarm status
-            var update = updateAlarms(alarms, source);
-            // trigger messaging if needed
+            if (source != null) {
+                var alarms = testSource(source);
+                // update database with new alarm status
+                var update = updateAlarms(alarms, source);
+                // trigger messaging if needed
+            }
 
         } else {
             console.log(err);

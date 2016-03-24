@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 24, 2016 at 03:08 PM
+-- Generation Time: Mar 24, 2016 at 03:35 PM
 -- Server version: 5.6.17
 -- PHP Version: 5.5.12
 
@@ -33,6 +33,20 @@ CREATE TABLE `alarms` (
   `al_sourceid` int(11) NOT NULL,
   `al_description` mediumtext COLLATE utf8_slovenian_ci NOT NULL,
   PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_slovenian_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ping`
+--
+
+CREATE TABLE `ping` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `pi_source` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `pi_source` (`pi_source`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_slovenian_ci;
 
 -- --------------------------------------------------------
