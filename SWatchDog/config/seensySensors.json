@@ -1,0 +1,7 @@
+﻿{
+    "url": "http://atena.ijs.si/api/get-nodes",
+    "general": {
+        "alarmTreshold": 1080000,
+        "warningTreshold": 3600000
+    }
+}

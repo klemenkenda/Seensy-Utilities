@@ -1,0 +1,27 @@
+{
+  "name": "SWatchDog",
+  "version": "0.0.0",
+  "description": "SWatchDog",
+  "main": "swatchdog.js",
+  "author": {
+    "name": "Klemen Kenda",
+    "email": "klemen.kenda@ijs.si"
+  },
+  "scripts": {
+    "start": "set NODE_ENV=development&& node swatchdog.js",
+    "test": "set NODE_ENV=test&& mocha",
+    "production": "set NODE_ENV=production&& node swatchdog.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.14.0",
+    "express": "^4.13.3",
+    "mysql": "^2.10.2",   
+    "node-schedule": "^0.5.1",
+    "request": "^2.6.0",
+    "sync-request": "^3.0.0"
+  },
+  "devDependencies": {
+    "mocha": "^2.2.4",
+    "supertest": "^1.1.0"
+  }
+}
