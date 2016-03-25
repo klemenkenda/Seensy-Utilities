@@ -77,11 +77,65 @@ function testSeensySensors(config, type) {
     return alarms;
 }
 
+function IsJsonString(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
+
+function testPing(config, type) {
+    var url = config.url;
+    var res;
+    console.log("Seensy instance - running test: " + url);
+    var alarms = [];
+    try {
+        res = syncRequest("GET", url);    
+
+        var checks = config.checks;            
+
+        for (var i in checks) {
+            var test = checks[i];
+            if (test.type == "HTTP.statusCode") {
+                if (res.statusCode != test.response) {
+                    alarms.push({
+                        "Type": type,
+                        "AlarmID": 2,
+                        "AlarmIDName": "alarm",
+                        "Description": "HTTP.statusCode = " + test.response + " failed!"
+                    });
+                }
+            } else if (test.type == "JSON") {
+                if (!IsJsonString(res.getBody())) {
+                    alarms.push({
+                        "Type": type,
+                        "AlarmID": 2, 
+                        "AlarmIDName": "alarm",
+                        "Description": "Not valid JSON response!"
+                    })
+                }
+            }
+        }
+    } catch (err) {
+        alarms.push({
+            "Type": type,
+            "AlarmID": 2,
+            "AlarmIDName": "alarm",
+            "Description": err.message
+        });
+    }
+
+    return alarms;
+}
+
 function testSource(source) {
     var config = JSON.parse(source.so_config);
     
     switch (source.ty_name) {
         case "ping":
+            var alarms = testPing(config, source.ty_name);
             break;
         case "seensysensors":
             var alarms = testSeensySensors(config, source.ty_name);
@@ -102,14 +156,17 @@ function updateAlarms(alarms, source) {
                 sql = "INSERT INTO alarms (al_name, al_sourceid, al_description) VALUES ('" + source.so_name + "', " + source.id + ", '" + JSON.stringify(alarms) + "')";
                 connection.query(sql, function (err, rows, fields) {
                     if (err) console.log(err);
-                });
-                
+                });                
             }
             // update source
             sql = "UPDATE source SET so_last = NOW()";
             connection.query(sql, function (err, rows, fields) {
                 if (err) console.log(err);
             });
+
+            if (alarms == []) {
+                console.log("Alarms cleared ...");
+            }
         }
     });
 }

@@ -1,0 +1,11 @@
+﻿{
+    "url": "http: //localhost:9301/",
+    "checks": [
+        { "type": "HTTP.statusCode", "response": "200" },
+        { "type": "JSON", "response": 1 }
+    ],
+    "general": {
+        "alarmTreshold": 2,
+        "warningTreshold":  1
+    }
+}
