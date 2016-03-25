@@ -2,7 +2,7 @@
 // -----------------------------------------------------------------------------------
 // FILE: sensorcrawler/index.php
 // AUTHOR: Klemen Kenda
-// DATE: 10/10/2013
+// DATE: 25/03/2016
 // DESCRIPTION: Crawler for sensor data.
 // HISTORY: 
 // -----------------------------------------------------------------------------------
@@ -26,6 +26,9 @@ include("inc/http.inc.php");
 // get contents timeout
 // set socket timeout
 ini_set('default_socket_timeout', 60);
+
+// check-in for SWatchDog
+getURL("http://localhost:9299/ping?id=4&secret=e549a200372db9f3fcfac9f384e4ac2d");
 
 // choose source
 $SQL = "SELECT * FROM sourcetype, source WHERE so_typeid = sourcetype.id ORDER BY rand() LIMIT 1";

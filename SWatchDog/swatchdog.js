@@ -214,7 +214,7 @@ function updateAlarms(alarms, source) {
                 });                
             }
             // update source
-            sql = "UPDATE source SET so_last = NOW()";
+            sql = "UPDATE source SET so_last = NOW() WHERE id = " + source.id;
             connection.query(sql, function (err, rows, fields) {
                 if (err) console.log(err);
             });
