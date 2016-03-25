@@ -1,5 +1,10 @@
 ﻿{
-    "url": "http://atena.ijs.si/api/get-nodes",
+    "url": "http://dashboard.seensy.me/api/get-nodes",
+    "filters": [
+        "FIO-Kromberk",
+        "FIO-Razdrto",
+        "FIO-Kneza"
+    ],
     "general": {
         "alarmTreshold": 1080000,
         "warningTreshold": 3600000

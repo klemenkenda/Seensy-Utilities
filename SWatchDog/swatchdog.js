@@ -27,6 +27,16 @@ function selectFirstRelevantSource(rows, fields) {
     return null;
 }
 
+function notFiltered(sensor, config) {    
+    for (var i in config) {
+        var filter = config[i];
+        var match = sensor.search(filter);
+        if (match != -1) return false;
+    }
+
+    return true;
+}
+
 function testSeensySensors(config, type) {
     var url = config.url;
     var ct = new Date();
@@ -40,22 +50,25 @@ function testSeensySensors(config, type) {
         var node = data[i];
         for (var j in node.Sensors) {
             var sensor = node.Sensors[j];
-            var sensorTs = Date.parse(sensor.LastTs);
             
-            // TODO: implement particular case
-
-            // general case
-            alarmT = config.general.alarmTreshold;
-            warningT = config.general.warningTreshold;
-            diff = (ct.getTime() - sensorTs);
-            
-            var alarm = 0;
-            if (diff > warningT) alarm = 1;
-            if (diff > alarmT) alarm = 2;            
-
-            if (alarm) {
-                var alarmDescription = ["nothing", "warning", "alarm"];
-                /*
+            if (notFiltered(sensor.Name, config.filters)) {
+                
+                var sensorTs = Date.parse(sensor.LastTs);
+                
+                // TODO: implement particular case
+                
+                // general case
+                alarmT = config.general.alarmTreshold;
+                warningT = config.general.warningTreshold;
+                diff = (ct.getTime() - sensorTs);
+                
+                var alarm = 0;
+                if (diff > warningT) alarm = 1;
+                if (diff > alarmT) alarm = 2;
+                
+                if (alarm) {
+                    var alarmDescription = ["nothing", "warning", "alarm"];
+                    /*
                 if (alarm == 1) {
                     expectedTs = ct.getTime() - warningT;
                 } else {
@@ -64,12 +77,13 @@ function testSeensySensors(config, type) {
                 */
 
                 alarms.push({
-                    "Type": type,
-                    "Sensor": sensor.Name,
-                    "AlarmID": alarm,
-                    "AlarmIDName": alarmDescription[alarm],
-                    "LastTs": sensorTs
-                })                
+                        "Type": type,
+                        "Sensor": sensor.Name,
+                        "AlarmID": alarm,
+                        "AlarmIDName": alarmDescription[alarm],
+                        "LastTs": sensorTs
+                    })
+                }
             }
         }
     }        
