@@ -13,7 +13,8 @@
     "production": "set NODE_ENV=production&& node swatchdog.js"
   },
   "dependencies": {
-    "mysql": "^2.10.2",   
+    "express": "^4.13.4",
+    "mysql": "^2.10.2",
     "node-schedule": "^0.5.1",
     "request": "^2.6.0",
     "sync-request": "^3.0.0"

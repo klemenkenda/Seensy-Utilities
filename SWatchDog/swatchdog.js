@@ -15,6 +15,7 @@ connection.connect();
  * ping
  * seensysensors
  * masterping
+ * pingcheckin
  */
 
 function selectFirstRelevantSource(rows, fields) {
@@ -37,7 +38,7 @@ function notFiltered(sensor, config) {
     return true;
 }
 
-function testSeensySensors(config, type) {
+function testSeensySensors(config, type, source, callBack) {
     var url = config.url;
     var ct = new Date();
     console.log("Seensy instance - sensor test: " + url);
@@ -69,14 +70,14 @@ function testSeensySensors(config, type) {
                 if (alarm) {
                     var alarmDescription = ["nothing", "warning", "alarm"];
                     /*
-                if (alarm == 1) {
-                    expectedTs = ct.getTime() - warningT;
-                } else {
-                    expectedTs = ct.getTime() - alarmT;
-                };
-                */
+                    if (alarm == 1) {
+                        expectedTs = ct.getTime() - warningT;
+                    } else {
+                        expectedTs = ct.getTime() - alarmT;
+                    };
+                    */
 
-                alarms.push({
+                    alarms.push({
                         "Type": type,
                         "Sensor": sensor.Name,
                         "AlarmID": alarm,
@@ -88,7 +89,7 @@ function testSeensySensors(config, type) {
         }
     }        
 
-    return alarms;
+    callBack(alarms, source);
 }
 
 function IsJsonString(str) {
@@ -100,7 +101,7 @@ function IsJsonString(str) {
     return true;
 }
 
-function testPing(config, type) {
+function testPing(config, type, source, callBack) {
     var url = config.url;
     var res;
     console.log("Seensy instance - running test: " + url);
@@ -141,22 +142,62 @@ function testPing(config, type) {
         });
     }
 
-    return alarms;
+    callBack(alarms, source);
 }
 
-function testSource(source) {
+function testPingCheckIn(config, type, source, callBack) {
+    console.log("pingCheckIn - test: " + source.so_name);
+
+    var sql = "SELECT * FROM source, ping WHERE ping.pi_source = source.id AND source.id = " + source.id;
+    connection.query(sql, function (err, rows) {
+        if (err == null) {
+            var alarms = [];
+            
+            var ping = rows[0];            
+            var ts = ping.ts;
+            var ct = new Date();
+            
+            var warningT = config.general.warningTreshold;
+            var alarmT = config.general.alarmTreshold;
+            
+            diff = (ct.getTime() - ping.ts.getTime());
+            
+            var alarm = 0;
+            if (diff > warningT) alarm = 1;
+            if (diff > alarmT) alarm = 2;
+            
+            if (alarm) {
+                var alarmDescription = ["nothing", "warning", "alarm"];
+
+                alarms.push({
+                    "Type": type,                    
+                    "AlarmID": alarm,
+                    "AlarmIDName": alarmDescription[alarm],
+                    "LastTs": ping.ts.getTime()
+                })
+            }
+            
+            callBack(alarms, source);
+        } else {
+            cosole.log(err);
+        }
+    });
+}
+
+function testSourceUpdateAlarms(source) {
     var config = JSON.parse(source.so_config);
     
     switch (source.ty_name) {
         case "ping":
-            var alarms = testPing(config, source.ty_name);
+            var alarms = testPing(config, source.ty_name, source, updateAlarms);
             break;
         case "seensysensors":
-            var alarms = testSeensySensors(config, source.ty_name);
+            var alarms = testSeensySensors(config, source.ty_name, source, updateAlarms);
             break;
-    }
-
-    return alarms;
+        case "pingcheckin":
+            var alarms = testPingCheckIn(config, source.ty_name, source, updateAlarms);
+            break;
+    }            
 }
 
 function updateAlarms(alarms, source) {
@@ -207,9 +248,9 @@ var j = schedule.scheduleJob('*/5 * * * * *', function () {
             var source = selectFirstRelevantSource(rows, fields);
             // test the source
             if (source != null) {
-                var alarms = testSource(source);
+                var alarms = testSourceUpdateAlarms(source);
                 // update database with new alarm status
-                var update = updateAlarms(alarms, source);
+                // var update = updateAlarms(alarms, source);
                 // trigger messaging if needed
             }
 
@@ -217,4 +258,44 @@ var j = schedule.scheduleJob('*/5 * * * * *', function () {
             console.log(err);
         };
     });
+});
+
+// start webserver for ping update
+
+var express = require('express');
+var app = express();
+var expressConfig = require('./config.json');
+
+function updatePing(id) {
+    var sql = "INSERT INTO ping (pi_source) VALUES (" + id + ") ON DUPLICATE KEY UPDATE ts = NOW()";
+    connection.query(sql, function (err) {
+        if (err) console.log(err);
+    });
+}
+
+app.get('/ping', function (req, res) {
+    var id = req.query.id;
+    var secret = req.query.secret;
+    var response = { "done": "ok" };
+    
+    var sql = "SELECT * FROM source WHERE id = ? AND so_secret = ?";
+    connection.query(sql, [id, secret], function (err, rows) {
+        if (err == null) {
+            if (rows.length != 0) {
+                // update
+                console.log("Ping: " + rows[0]["so_name"]);
+                updatePing(id);
+            } else {
+                response = { "error" : "Problem with ID and/or secret." };                
+            }
+        } else {
+            console.log(err);
+        }
+
+        res.json(response);
+    });        
+});
+
+app.listen(expressConfig["port"], function () {
+    console.log('SWatchDog ping server listening at ' + expressConfig["port"] + '!');
 });
