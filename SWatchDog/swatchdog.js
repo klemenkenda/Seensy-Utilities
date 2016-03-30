@@ -62,6 +62,7 @@ function testSeensySensors(config, type, source, callBack) {
                 alarmT = config.general.alarmTreshold;
                 warningT = config.general.warningTreshold;
                 diff = (ct.getTime() - sensorTs);
+                console.log(diff);
                 
                 var alarm = 0;
                 if (diff > warningT) alarm = 1;
