@@ -1,0 +1,6 @@
+﻿{    
+    "general": {
+        "alarmTreshold": 7200000,
+        "warningTreshold": 3600000
+    }
+}
