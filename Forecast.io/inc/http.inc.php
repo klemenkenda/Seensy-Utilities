@@ -80,8 +80,9 @@ function getURLPost ($url, $fields, $raw = 1) {
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);	
 		
 	//execute post
-    $html = curl_exec($ch);    
+    $html = curl_exec($ch);  
     
+        
 	if (curl_error($ch)) return -1;
 		
     //close connection
