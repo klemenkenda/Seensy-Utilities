@@ -3,7 +3,10 @@
     "filters": [
         "FIO-Kromberk",
         "FIO-Razdrto",
-        "FIO-Kneza"
+        "FIO-Kneza",
+        "High Tech Campus",
+        "Room",
+        "Office-"
     ],
     "general": {
         "alarmTreshold": 1080000,
