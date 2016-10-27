@@ -23,14 +23,14 @@ The script will traverse ```logs``` directory and check each file there. It will
 First you need to configure both instances: data cleaning (dc) and data server (ds) in the first part of the ```push_logs.py```. The following needs to be edited for your needs:
 
 ```
-# configuration 
-config = {} 
-config["dir"] = "cleaned/" 
- 
-# data server 
-config["dsLocation"]  = "http://localhost:9202" 
-config["dsRequest"] = "/data/add-measurement/" 
-# data cleaning 
-config["dcLocation"]  = "http://localhost:9214" 
-config["dcRequest"] = "/cleaning/add-measurement/" 
+# configuration
+config = {}
+config["dir"] = "cleaned/"
+
+# data server
+config["dsLocation"]  = "http://localhost:9202"
+config["dsRequest"] = "/data/add-measurement/"
+# data cleaning
+config["dcLocation"]  = "http://localhost:9214"
+config["dcRequest"] = "/cleaning/add-measurement/"
 ```
