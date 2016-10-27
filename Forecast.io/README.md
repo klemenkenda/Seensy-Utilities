@@ -3,11 +3,22 @@ Forecast.io is a script, that is able to continually parse data from Forecast.io
 
 WeatherOnline and OpenWeatherMap parsers are also included, but they have not been maintained since 2014.
 
-## Config
-TODO
 
 ## SQL
 TODO
+
+### Config
+Config is done via entering lines to SQL.
+
+First, you need to insert a source type for 'Forecast.io - API'.
+```
+INSERT INTO `sourcetype` (`id`, `st_name`) VALUES (1, 'Forecast.io - API');
+```
+
+Second, you can enter your own source (replace ****Forecast.io-KEY**** with your own key).
+```
+INSERT INTO `source` (`id`, `so_name`, `so_typeid`, `so_apikey`, `so_parameters`, `so_lastcrawl`, `so_successcrawl`, `so_status`) VALUES (1, 'Forecast - HTC - Vienna', 1, '****Forecast.io-KEY****', '48.163619,16.337704,Vienna-HTC;', '2016-10-27 15:10:39', '2016-10-27 15:00:00', '48.163619,16.337704,Vienna-HTC=');
+```
 
 ## Simulated service
 The service is run simply via ```service.bat``` that runs the PHP update script every hour. Service can either parse historical data (if it is missing) or current data.
