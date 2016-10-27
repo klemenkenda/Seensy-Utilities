@@ -166,6 +166,8 @@ logs/
 
 */logs/
 */logpush/cleaned/
+*/cleaned/
+*/errors/
 */node_modules/
 */schema/db/
 */schema/restore/
