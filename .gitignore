@@ -163,3 +163,8 @@ $RECYCLE.BIN/
 schema/db/
 schema/restore/
 logs/
+
+*/logs/
+*/node_modules/
+*/schema/db/
+*/schema/restore/

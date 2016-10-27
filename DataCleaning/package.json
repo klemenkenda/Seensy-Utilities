@@ -8,16 +8,22 @@
     "email": "klemen.kenda@ijs.si"
   },
   "scripts": {
-    "start": "set NODE_ENV=development&& node cleaning.js",
+    "start": "set NODE_ENV=cleaning&& node cleaning.js",
+    "restart": "set NODE_ENV=development&& node cleaning.js open",    
     "test": "set NODE_ENV=test&& mocha",
-    "production": "set NODE_ENV=production&& node cleaning.js"
+    "production":  "set NODE_ENV=production&& node seensy.js"
   },
   "dependencies": {
-    "express": "^4.13.4",
-    "mysql": "^2.10.2",
+    "body-parser": "^1.14.0",
+    "express": "^4.13.3",
+    "mkdirp": "^0.5.1",
+    "morgan": "^1.6.1",
+    "ncp": "^2.0.0",
     "node-schedule": "^0.5.1",
-    "request": "^2.6.0",
-    "sync-request": "^3.0.0"
+    "qminer": "^7.0.0",
+    "request": "^2.62.0",
+    "rimraf": "^2.4.3",
+    "winston": "^1.0.1"
   },
   "devDependencies": {
     "mocha": "^2.2.4",
