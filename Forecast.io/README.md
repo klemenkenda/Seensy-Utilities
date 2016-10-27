@@ -10,7 +10,12 @@ TODO
 TODO
 
 ## Simulated service
-The service is run simply via ```service.bat``` that runs the PHP update script every hour.
-
+The service is run simply via ```service.bat``` that runs the PHP update script every hour. Service can either parse historical data (if it is missing) or current data.
 
 ## Push old measurements
+Old measurements can be pushed to the analytical platform via PHP script in the ```push``` directory. Just use ```run.bat``` to run it. Be aware that you need to take care so you do not push old data to analytical platform as the platform is trying linearly to find appropriate timestamp to update it.
+
+You have to open ```push.php``` and correct the timestamp at line 51:
+```
+$timestamp = " AND me_time > '2015-04-01 00:00:00' ";
+```
