@@ -15,7 +15,7 @@ config = {}
 config["dir"] = "cleaned/"
 
 # data server
-config["dsLocation"]  = "http://localhost:9201" 
+config["dsLocation"]  = "http://localhost:9201"
 config["dsRequest"] = "/data/add-measurement/"
 # data cleaning
 config["dcLocation"]  = "http://localhost:9214"
@@ -52,7 +52,7 @@ def streamLog(fName):
 
                 r = requests.post(config["dcLocation"] + config["dcRequest"], data=sline, headers=headers)
                 sleep(0.02);
-                if r.status_code <> 200:
+                if r.status_code != 200:
                     fe.write(sline + '\n')
                     print(r);
 
@@ -62,7 +62,7 @@ def streamLog(fName):
                     s = requests.post(config["dsLocation"] + config["dsRequest"], data=cleanLine, headers=headers)
 
             except requests.exceptions.RequestException as e:
-                print e
+                print(e)
 
     fe.close()
     return
