@@ -1,10 +1,9 @@
 // general includes
-var qm = require('qminer');
 var logger = require('../../modules/logger/logger.js');
 
 function GeneralHandler(app) {
     logger.debug('General handler - INIT');
-    this.app = app;    
+    this.app = app;
     this.namespace = '/general/';
 }
 
@@ -22,7 +21,7 @@ GeneralHandler.prototype.handleGetRouterPaths = function (req, res) {
 
 GeneralHandler.prototype.setupRoutes = function (app) {
     // custom handler setup
-    app.get('/', this.handleGetRouterPaths.bind(this));    
+    app.get('/', this.handleGetRouterPaths.bind(this));
 }
 
 module.exports = GeneralHandler;
