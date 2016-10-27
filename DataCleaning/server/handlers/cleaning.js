@@ -224,11 +224,6 @@ CleaningHandler.prototype.addMeasurement = function (data, control, update){
             sensor.Node = node;
             sensor.Type = type;
 
-            // Create names for additional stores
-            var measurementStoreStr = "M" + Utils.Sensor.nameFriendly(sensor.Name);
-
-            var measurementStore = this.base.store(measurementStoreStr);
-
             // Parse and store measurement
             var measurement = new Object();
             measurement.Val = Number(measurements[j].value);

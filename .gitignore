@@ -171,4 +171,5 @@ logs/
 */node_modules/
 */schema/db/
 */schema/restore/
-*/Firecast.io/forecast.io.txt
+*/Forecast.io/forecast.io.txt
+*/invalid_request.txt
