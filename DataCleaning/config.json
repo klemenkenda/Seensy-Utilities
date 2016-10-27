@@ -1,0 +1,68 @@
+{
+    "development": {
+        "dataService": {
+            "server": {
+				"root": "http://localhost:9201",
+                "port": 9201
+            }
+        },
+        "admins": {            
+            "admin": { "password": "admin" }
+        },
+        "logger": {
+            "console": { "level": "debug" }
+        }, 
+        "dataLogger":  {
+            "dir":  "./utilities/logpush/logs/"
+        }
+    },
+    "cleaning": {
+        "dataService": {
+            "server": {
+				"root": "http://localhost:9214",
+                "port": 9214
+            }
+        },
+        "admins": {            
+            "admin": { "password": "admin" }
+        },
+        "logger": {
+            "console": { "level": "debug" }
+        }, 
+        "dataLogger":  {
+            "dir":  "./utilities/logpush/logs/"
+        }
+    },
+    "production": {
+        "dataService": {
+            "server": {
+				"root": "http://localhost:9612",
+                "port": 9612
+            }
+        }, 
+        "logger": {
+            "console": { "level": "info" }
+        }, 
+        "dataLogger":  {
+            "dir":  "./utilities/logpush/logs/"
+        }
+    },
+
+	"test": {
+        "dataService": {
+            "server": {
+				"root": "http://localhost:9613",
+                "port": 9613
+            }
+        }, 
+		"admins": {
+            "test": { "password": "test" }
+        },
+        "logger": {
+            "console": { "level": "error" }
+        }, 
+        "dataLogger":  {
+            "dir":  "./utilities/logpush/logs/"
+        }
+    }
+}

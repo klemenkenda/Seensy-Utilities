@@ -1,0 +1,13 @@
+[
+    {
+        "type": "Phenomena",
+        "list": [
+            { "name": "Power", "min": 0, "max": 10000 },
+            { "name": "Energy", "min": 0, "max": 10000 },
+            { "name": "Tripped", "min": 0, "max": 1 },
+            { "name": "Temperature", "min": -50, "max": 50 },
+            { "name": "Humidity", "min": 0, "max": 100 },
+            { "name": "LightLevel", "min": 0, "max": 1000 }
+        ]
+    }
+]
