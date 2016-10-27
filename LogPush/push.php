@@ -36,7 +36,7 @@ function pushFile($filename) {
 		// echo $JSON . "\n\n";
 		// create request to EnStreaM
 		if (isJSON($JSON)) {
-		  $url = $miner["url"] . ":" . $miner["port"] . "/data/add-measurement?data=" . urlencode($JSON);
+		  $url = $miner["url"] . ":" . $miner["port"] . "/enstream/add-measurement?data=" . urlencode($JSON);
 		  // uncomment to do the real push!
 		  $HTML = getURL($url);		
 		  echo $HTML . "\n\n";		  
