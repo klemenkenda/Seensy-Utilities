@@ -5,7 +5,9 @@ WeatherOnline and OpenWeatherMap parsers are also included, but they have not be
 
 
 ## SQL
-TODO
+Create your database. Not to change any data in the config files, use name ```sensyforecast``` for your database. It should have writing and reading permissions for user (root/*no password*).
+
+Import ```seensyforecast-structure.sql``` into this database to create basic structure.
 
 ### Config
 Config is done via entering lines to SQL.
