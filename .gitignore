@@ -173,3 +173,5 @@ logs/
 */schema/restore/
 */Forecast.io/forecast.io.txt
 */invalid_request.txt
+*/.filelist
+*/.lock

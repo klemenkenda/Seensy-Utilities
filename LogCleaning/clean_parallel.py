@@ -15,13 +15,43 @@ config = {}
 config["dir"] = "logs/"
 config["cleandir"] = "cleaned/"
 config["errordir"] = "errors/"
+config["processes"] = 2
 
-print("Starting cleaning ...")
+if (len(sys.argv) == 0):
+    print("Use python clean_parallel.py mode <filename>")
+    print("  mode - start or cleanfile <filename> or cleannext")
+    print("  filename - name of the file in the dir")
+    quit()
 
-# list files in the log file directory
-fList = os.listdir(config["dir"])
-#fList.sort(key=lambda x: datetime.datetime.strptime(x.split('-')[1].split('.')[0], '%Y%m%d'))
-fList.sort()
+if (sys.argv[1] == "start"):
+    print("Starting cleaning scheduler ...")
+
+    # list files in the log file directory
+    fList = os.listdir(config["dir"])
+    #fList.sort(key=lambda x: datetime.datetime.strptime(x.split('-')[1].split('.')[0], '%Y%m%d'))
+    fList.sort()
+
+    if (os.path.isfile('.lock')):
+        print("Lock exists")
+        quit()
+
+    if (os.path.isfile('.filelist')):
+        print("File list exists")
+        quit()
+
+    open(".lock", "w").close()
+
+    fl = open(".filelist", "w")
+
+    for fName in fList:
+        if os.path.isfile(config["dir"] + fName) == True:
+            print("Adding file to queue: ", fName)
+            fl.write(fName + "\n")
+
+    fl.close()
+
+    os.remove(".lock")
+
 
 def streamLog(fName):
     print("\nCleaning log file: " + fName)
@@ -33,9 +63,8 @@ def streamLog(fName):
         for line in f:
             try:
                 i = i + len(line)
-                if (i % 100 == 0):
-                    print(str(i) + " / " + str(size) + " " + str(round(float(i)/size, 3)*100) + "%")
-                    sys.stdout.flush()
+                print(str(i) + " / " + str(size) + " " + str(round(float(i)/size, 3)*100) + "%")
+                sys.stdout.flush()
 
                 sline = line.strip()
                 cleanLine = sline;
@@ -61,7 +90,3 @@ def streamLog(fName):
     fok.close()
     fe.close()
     return
-
-for fName in fList:
-    if os.path.isfile(config["dir"] + fName) == True:
-        streamLog(fName)
