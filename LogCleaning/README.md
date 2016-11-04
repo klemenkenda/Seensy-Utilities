@@ -34,3 +34,6 @@ config["dsRequest"] = "/data/add-measurement/"
 config["dcLocation"]  = "http://localhost:9214"
 config["dcRequest"] = "/cleaning/add-measurement/"
 ```
+
+## Daily Job
+Script for fetching last day log from production server, cleaning it and then pushing it to local Seensy instance is ```load_clean_previous_day.py```. The task can be invoked with ```service.bat```. The best way to do so is to run this script from Task Scheduler (e.g. at 12:05AM each day). Take care that the task is run in the proper directory.

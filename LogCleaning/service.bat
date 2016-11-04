@@ -1,0 +1,1 @@
+python load_clean_previous_day.py
