@@ -28,7 +28,7 @@ function selectFirstRelevantSource(rows, fields) {
     return null;
 }
 
-function notFiltered(sensor, config) {    
+function notFiltered(sensor, config) {
     for (var i in config) {
         var filter = config[i];
         var match = sensor.search(filter);
@@ -44,30 +44,30 @@ function testSeensySensors(config, type, source, callBack) {
     console.log("Seensy instance - sensor test: " + url);
     var res = syncRequest("GET", url);
     var data = JSON.parse(res.getBody());
-    
-    var alarms = [];    
-    
+
+    var alarms = [];
+
     for (var i in data) {
         var node = data[i];
         for (var j in node.Sensors) {
             var sensor = node.Sensors[j];
-            
+
             if (notFiltered(sensor.Name, config.filters)) {
-                
+
                 var sensorTs = Date.parse(sensor.LastTs);
-                
+
                 // TODO: implement particular case
-                
+
                 // general case
                 alarmT = config.general.alarmTreshold;
                 warningT = config.general.warningTreshold;
                 diff = (ct.getTime() - sensorTs);
                 console.log(diff);
-                
+
                 var alarm = 0;
                 if (diff > warningT) alarm = 1;
                 if (diff > alarmT) alarm = 2;
-                
+
                 if (alarm) {
                     var alarmDescription = ["nothing", "warning", "alarm"];
                     /*
@@ -88,7 +88,7 @@ function testSeensySensors(config, type, source, callBack) {
                 }
             }
         }
-    }        
+    }
 
     callBack(alarms, source);
 }
@@ -108,9 +108,9 @@ function testPing(config, type, source, callBack) {
     console.log("Seensy instance - running test: " + url);
     var alarms = [];
     try {
-        res = syncRequest("GET", url);    
+        res = syncRequest("GET", url);
 
-        var checks = config.checks;            
+        var checks = config.checks;
 
         for (var i in checks) {
             var test = checks[i];
@@ -127,7 +127,7 @@ function testPing(config, type, source, callBack) {
                 if (!IsJsonString(res.getBody())) {
                     alarms.push({
                         "Type": type,
-                        "AlarmID": 2, 
+                        "AlarmID": 2,
                         "AlarmIDName": "alarm",
                         "Description": "Not valid JSON response!"
                     })
@@ -153,31 +153,31 @@ function testPingCheckIn(config, type, source, callBack) {
     connection.query(sql, function (err, rows) {
         if (err == null) {
             var alarms = [];
-            
-            var ping = rows[0];            
+
+            var ping = rows[0];
             var ts = ping.ts;
             var ct = new Date();
-            
+
             var warningT = config.general.warningTreshold;
             var alarmT = config.general.alarmTreshold;
-            
+
             diff = (ct.getTime() - ping.ts.getTime());
-            
+
             var alarm = 0;
             if (diff > warningT) alarm = 1;
             if (diff > alarmT) alarm = 2;
-            
+
             if (alarm) {
                 var alarmDescription = ["nothing", "warning", "alarm"];
 
                 alarms.push({
-                    "Type": type,                    
+                    "Type": type,
                     "AlarmID": alarm,
                     "AlarmIDName": alarmDescription[alarm],
                     "LastTs": ping.ts.getTime()
                 })
             }
-            
+
             callBack(alarms, source);
         } else {
             cosole.log(err);
@@ -187,7 +187,7 @@ function testPingCheckIn(config, type, source, callBack) {
 
 function testSourceUpdateAlarms(source) {
     var config = JSON.parse(source.so_config);
-    
+
     switch (source.ty_name) {
         case "ping":
             var alarms = testPing(config, source.ty_name, source, updateAlarms);
@@ -198,21 +198,21 @@ function testSourceUpdateAlarms(source) {
         case "pingcheckin":
             var alarms = testPingCheckIn(config, source.ty_name, source, updateAlarms);
             break;
-    }            
+    }
 }
 
 function updateAlarms(alarms, source) {
     var sql = "SELECT * FROM alarms WHERE al_sourceid = " + source.id + " ORDER BY id DESC";
     connection.query(sql, function (err, rows, fields) {
         if (err == null) {
-            if ((rows.length != 0) && (rows[0].al_description == JSON.stringify(alarms))) {                                
+            if ((rows.length != 0) && (rows[0].al_description == JSON.stringify(alarms))) {
                 // do nothing
                 console.log("No changes ...");
-            } else {                
+            } else {
                 sql = "INSERT INTO alarms (al_name, al_sourceid, al_description) VALUES ('" + source.so_name + "', " + source.id + ", '" + JSON.stringify(alarms) + "')";
                 connection.query(sql, function (err, rows, fields) {
                     if (err) console.log(err);
-                });                
+                });
             }
             // update source
             sql = "UPDATE source SET so_last = NOW() WHERE id = " + source.id;
@@ -234,12 +234,7 @@ function updateMasterPing() {
     });
 }
 
-var stateI = 0;
-var stateArray = ['-', '\\', '|', '/'];
-
-var j = schedule.scheduleJob('*/5 * * * * *', function () {
-    stateI++;
-    process.stdout.write(stateArray[stateI % 4] + "\033[0G");
+var j = schedule.scheduleJob('*/5 * * * * *', function () {    
     updateMasterPing();
 
     var sql = "SELECT * FROM type, source WHERE so_typeid = type.id AND so_typeid != 3";
@@ -278,7 +273,7 @@ app.get('/ping', function (req, res) {
     var id = req.query.id;
     var secret = req.query.secret;
     var response = { "done": "ok" };
-    
+
     var sql = "SELECT * FROM source WHERE id = ? AND so_secret = ?";
     connection.query(sql, [id, secret], function (err, rows) {
         if (err == null) {
@@ -287,14 +282,14 @@ app.get('/ping', function (req, res) {
                 console.log("Ping: " + rows[0]["so_name"]);
                 updatePing(id);
             } else {
-                response = { "error" : "Problem with ID and/or secret." };                
+                response = { "error" : "Problem with ID and/or secret." };
             }
         } else {
             console.log(err);
         }
 
         res.json(response);
-    });        
+    });
 });
 
 app.listen(expressConfig["port"], function () {

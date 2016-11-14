@@ -206,7 +206,7 @@ function parseForecastIOAPI($source) {
 			// create request to EnStreaM
 			// $url = $miner["url"] . ":" . $miner["port"] . "/enstream/add-measurement?data=" . urlencode($JSON);
 			$url = "http://dashboard2.seensy.me/api/add-json-update";
-			$url = "http://localhost/api/add-json/update";
+			$url = "http://localhost/api/add-json-update";
 			$fields = "data=" . urlencode($JSON);
 			$HTML .= getURLPost($url, $fields);
 
